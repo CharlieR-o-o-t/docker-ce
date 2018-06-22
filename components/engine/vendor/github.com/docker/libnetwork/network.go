@@ -1172,6 +1172,13 @@ func (n *network) createEndpoint(name string, options ...EndpointOption) (Endpoi
 	if err = n.addEndpoint(ep); err != nil {
 		return nil, err
 	}
+	
+	// We should update store after network driver response
+	// in order to save full data. 
+	if err = n.getController().updateToStore(ep); err != nil {
+		return nil, err
+	}
+	
 	defer func() {
 		if err != nil {
 			if e := ep.deleteEndpoint(false); e != nil {
